@@ -82,6 +82,20 @@ jcsk100/roc/roc
 不要只填 `cube-account-ui`，必须包含完整的组织、子组织和仓库路径。留空时会
 扫描当前令牌有权限访问的所有仓库。
 
+### 分支、标签或 Commit 怎么填
+
+`分支、标签或 Commit` 留空时使用仓库默认分支。支持：
+
+```text
+develop
+v1.0.0
+a1b2c3d4
+refs/heads/develop
+https://cnb.cool/jcsk100/cube/cube-account-ui/-/tree/develop
+```
+
+如果分支名本身包含斜杠，例如 `feature/login`，直接填写完整分支名。
+
 ## OAuth
 
 插件支持 CNB OAuth 2.0。CNB OAuth 应用需要运营管理员审核，普通使用场景

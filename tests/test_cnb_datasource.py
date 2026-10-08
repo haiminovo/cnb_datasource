@@ -189,6 +189,16 @@ class CNBDataSourceTest(unittest.TestCase):
             ],
         )
 
+    def test_normalize_ref(self):
+        datasource = build_datasource()
+        self.assertEqual(datasource._normalize_ref("refs/heads/develop"), "develop")
+        self.assertEqual(
+            datasource._normalize_ref(
+                "https://cnb.cool/jcsk100/cube/cube-account-ui/-/tree/release"
+            ),
+            "release",
+        )
+
     def test_get_pages_with_ref(self):
         datasource = build_datasource()
         calls = []

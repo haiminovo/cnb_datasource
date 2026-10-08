@@ -285,7 +285,25 @@ class CNBDataSource(OnlineDocumentDatasource):
             return ""
         if not isinstance(value, str):
             raise TypeError("CNB ref must be a string")
-        return value.strip()
+        ref = value.strip()
+        if not ref:
+            return ""
+        if "://" in ref:
+            parsed = urlparse(ref)
+            host = (parsed.hostname or "").casefold()
+            if host not in {"cnb.cool", "www.cnb.cool"}:
+                raise ValueError(
+                    "CNB ref URL must use cnb.cool, for example "
+                    "https://cnb.cool/group/repository/-/tree/develop"
+                )
+            path = unquote(parsed.path)
+            for marker in ("/-/tree/", "/-/blob/", "/-/commit/"):
+                if marker in path:
+                    ref = path.split(marker, 1)[1].split("/", 1)[0]
+                    break
+            else:
+                raise ValueError("CNB ref URL must point to a tree, blob, or commit")
+        return ref.removeprefix("refs/heads/").removeprefix("refs/tags/").strip()
 
     def _encode_ref(self, ref: str) -> str:
         if not ref:
@@ -488,9 +506,12 @@ class CNBDataSource(OnlineDocumentDatasource):
                 f"/{self._encode_repo_path(repo_path)}/-/git/contents",
                 {"ref": ref} if ref else None,
             )
-        except CNBAPIError:
+        except CNBAPIError as exc:
             if raise_on_error:
-                raise
+                raise CNBAPIError(
+                    exc.status_code,
+                    f"{exc} (repository={repo_path}, ref={ref or 'default branch'})",
+                ) from exc
             return None
         if not isinstance(root, dict):
             return None

@@ -45,12 +45,18 @@ parameters:
       ja_JP: ブランチ、タグ、コミット
       pt_BR: Branch, tag ou commit
       zh_Hant: 分支、標籤或 Commit
+    placeholder:
+      en_US: develop
+      zh_Hans: develop
+      ja_JP: develop
+      pt_BR: develop
+      zh_Hant: develop
     description:
-      en_US: Optional CNB ref. Leave empty to use the repository default branch
-      zh_Hans: 可选 CNB ref，留空使用仓库默认分支
-      ja_JP: 任意の CNB ref。空欄の場合は既定ブランチを使用します
-      pt_BR: Ref opcional do CNB. Deixe vazio para usar a branch padrao
-      zh_Hant: 選填 CNB ref，留空使用倉庫預設分支
+      en_US: A branch name, tag, commit SHA, or cnb.cool tree/blob URL. Leave empty for the default branch
+      zh_Hans: 可填分支名、Tag、Commit SHA 或 cnb.cool 文件地址；留空使用默认分支
+      ja_JP: ブランチ名、タグ、コミット SHA、または cnb.cool の tree/blob URL。空欄は既定ブランチ
+      pt_BR: Nome da branch, tag, commit SHA ou URL cnb.cool tree/blob. Deixe vazio para a branch padrao
+      zh_Hant: 可填分支名、Tag、Commit SHA 或 cnb.cool 檔案網址；留空使用預設分支
   - name: max_repos
     type: number
     required: false

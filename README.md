@@ -101,6 +101,22 @@ Do not enter only the repository name, such as `cube-account-ui`. The full
 namespace path is required. Leave this field empty to scan all repositories
 accessible to the configured CNB token.
 
+### Branch, tag, or commit
+
+Leave `Branch, tag, or commit` empty to use the repository default branch.
+Accepted values include:
+
+```text
+develop
+v1.0.0
+a1b2c3d4
+refs/heads/develop
+https://cnb.cool/jcsk100/cube/cube-account-ui/-/tree/develop
+```
+
+Use the branch name directly when the branch contains slashes, for example
+`feature/login`.
+
 ## Import Behavior
 
 - Access is read-only.
