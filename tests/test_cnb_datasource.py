@@ -225,6 +225,23 @@ class CNBDataSourceTest(unittest.TestCase):
             "commit-sha",
         )
 
+    def test_ref_selection_allows_only_one_field(self):
+        datasource = build_datasource()
+        self.assertEqual(
+            datasource._get_ref_selection({"branch": "develop"}),
+            ("branch", "develop"),
+        )
+        self.assertEqual(
+            datasource._get_ref_selection({"tag": "v1.0.0"}),
+            ("tag", "v1.0.0"),
+        )
+        self.assertEqual(
+            datasource._get_ref_selection({"commit": "abc123"}),
+            ("commit", "abc123"),
+        )
+        with self.assertRaises(ValueError):
+            datasource._get_ref_selection({"branch": "develop", "tag": "v1.0.0"})
+
     def test_get_pages_with_ref(self):
         datasource = build_datasource()
         calls = []
@@ -247,8 +264,7 @@ class CNBDataSourceTest(unittest.TestCase):
         response = datasource._get_pages(
             {
                 "repository_paths": "team/demo",
-                "ref": "develop",
-                "ref_type": "branch",
+                "branch": "develop",
                 "max_files_per_repo": 0,
                 "issues_per_repo": 0,
                 "pulls_per_repo": 0,
@@ -287,8 +303,7 @@ class CNBDataSourceTest(unittest.TestCase):
         response = datasource._get_pages(
             {
                 "repository_paths": "team/demo",
-                "ref": "develop",
-                "ref_type": "branch",
+                "branch": "develop",
                 "max_files_per_repo": 100,
                 "issues_per_repo": 0,
                 "pulls_per_repo": 0,

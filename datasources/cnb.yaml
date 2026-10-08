@@ -36,53 +36,15 @@ parameters:
       ja_JP: 任意。例：organization/group/repository。完全な cnb.cool URL または organization/group/repository を指定し、複数はカンマまたは改行で区切ります。空欄の場合はアクセス可能な全リポジトリを一覧表示します
       pt_BR: "Opcional. Exemplo: organization/group/repository. Use uma URL cnb.cool ou caminho organizacao/grupo/repositorio; separe varios por virgula ou linha. Deixe vazio para listar todos os repositorios acessiveis"
       zh_Hant: 選填。範例：organization/group/repository；可填完整 cnb.cool 網址或 organization/group/repository，多個路徑用逗號或換行分隔；留空時列出所有有權限的倉庫
-  - name: ref_type
-    type: select
-    required: false
-    default: branch
-    options:
-      - value: branch
-        label:
-          en_US: Branch
-          zh_Hans: 分支
-          ja_JP: ブランチ
-          pt_BR: Branch
-          zh_Hant: 分支
-      - value: tag
-        label:
-          en_US: Tag
-          zh_Hans: 标签
-          ja_JP: タグ
-          pt_BR: Tag
-          zh_Hant: 標籤
-      - value: commit
-        label:
-          en_US: Commit
-          zh_Hans: Commit
-          ja_JP: コミット
-          pt_BR: Commit
-          zh_Hant: Commit
-    label:
-      en_US: Ref type
-      zh_Hans: 引用类型
-      ja_JP: Ref 種別
-      pt_BR: Tipo de ref
-      zh_Hant: 引用類型
-    description:
-      en_US: Select the exact type of the value below. Branch and tag names are resolved to a commit SHA before reading files
-      zh_Hans: 选择下方引用值的准确类型。分支和标签会先解析为 Commit SHA，再读取文件
-      ja_JP: 下の値の正確な種別を選択します。Branch と Tag は Commit SHA に解決してからファイルを読み込みます
-      pt_BR: Selecione o tipo exato do valor abaixo. Branch e tag sao resolvidos para commit SHA antes da leitura
-      zh_Hant: 選擇下方引用值的準確類型。分支和標籤會先解析為 Commit SHA，再讀取檔案
-  - name: ref
+  - name: branch
     type: string
     required: false
     label:
-      en_US: Branch, tag, or commit
-      zh_Hans: 分支、标签或 Commit
-      ja_JP: ブランチ、タグ、コミット
-      pt_BR: Branch, tag ou commit
-      zh_Hant: 分支、標籤或 Commit
+      en_US: Branch (optional)
+      zh_Hans: 分支（可选）
+      ja_JP: ブランチ（任意）
+      pt_BR: Branch (opcional)
+      zh_Hant: 分支（選填）
     placeholder:
       en_US: develop
       zh_Hans: develop
@@ -90,11 +52,53 @@ parameters:
       pt_BR: develop
       zh_Hant: develop
     description:
-      en_US: The branch name, tag name, or commit SHA selected by Ref type. Leave empty for the default branch
-      zh_Hans: 根据“引用类型”填写分支名、标签名或 Commit SHA；留空使用默认分支
-      ja_JP: Ref 種別に合わせてブランチ名、タグ名、コミット SHA を入力します。空欄は既定ブランチ
-      pt_BR: Informe o branch, tag ou commit SHA conforme o tipo selecionado. Deixe vazio para a branch padrao
-      zh_Hant: 根據「引用類型」填寫分支名、標籤名或 Commit SHA；留空使用預設分支
+      en_US: Branch name. Set only one of Branch, Tag, or Commit; leave all empty for the default branch
+      zh_Hans: 分支名称。Branch、Tag、Commit 只能填写一个；全部留空使用默认分支
+      ja_JP: ブランチ名。Branch、Tag、Commit のいずれか1つだけを指定します。すべて空欄なら既定ブランチ
+      pt_BR: Nome da branch. Preencha apenas um entre Branch, Tag ou Commit; deixe todos vazios para a branch padrao
+      zh_Hant: 分支名稱。Branch、Tag、Commit 只能填寫一個；全部留空使用預設分支
+  - name: tag
+    type: string
+    required: false
+    label:
+      en_US: Tag (optional)
+      zh_Hans: 标签（可选）
+      ja_JP: タグ（任意）
+      pt_BR: Tag (opcional)
+      zh_Hant: 標籤（選填）
+    placeholder:
+      en_US: v1.0.0
+      zh_Hans: v1.0.0
+      ja_JP: v1.0.0
+      pt_BR: v1.0.0
+      zh_Hant: v1.0.0
+    description:
+      en_US: Tag name. Set only one of Branch, Tag, or Commit; leave all empty for the default branch
+      zh_Hans: 标签名称。Branch、Tag、Commit 只能填写一个；全部留空使用默认分支
+      ja_JP: タグ名。Branch、Tag、Commit のいずれか1つだけを指定します。すべて空欄なら既定ブランチ
+      pt_BR: Nome da tag. Preencha apenas um entre Branch, Tag ou Commit; deixe todos vazios para a branch padrao
+      zh_Hant: 標籤名稱。Branch、Tag、Commit 只能填寫一個；全部留空使用預設分支
+  - name: commit
+    type: string
+    required: false
+    label:
+      en_US: Commit SHA (optional)
+      zh_Hans: Commit SHA（可选）
+      ja_JP: Commit SHA（任意）
+      pt_BR: Commit SHA (opcional)
+      zh_Hant: Commit SHA（選填）
+    placeholder:
+      en_US: a1b2c3d4e5f6...
+      zh_Hans: a1b2c3d4e5f6...
+      ja_JP: a1b2c3d4e5f6...
+      pt_BR: a1b2c3d4e5f6...
+      zh_Hant: a1b2c3d4e5f6...
+    description:
+      en_US: Full or abbreviated commit SHA. Set only one of Branch, Tag, or Commit; leave all empty for the default branch
+      zh_Hans: 完整或短 Commit SHA。Branch、Tag、Commit 只能填写一个；全部留空使用默认分支
+      ja_JP: 完全または短い Commit SHA。Branch、Tag、Commit のいずれか1つだけを指定します。すべて空欄なら既定ブランチ
+      pt_BR: Commit SHA completo ou abreviado. Preencha apenas um entre Branch, Tag ou Commit; deixe todos vazios para a branch padrao
+      zh_Hant: 完整或短 Commit SHA。Branch、Tag、Commit 只能填寫一個；全部留空使用預設分支
   - name: max_repos
     type: number
     required: false

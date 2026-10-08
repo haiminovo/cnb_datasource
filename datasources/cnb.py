@@ -305,15 +305,22 @@ class CNBDataSource(OnlineDocumentDatasource):
                 raise ValueError("CNB ref URL must point to a tree, blob, or commit")
         return ref.removeprefix("refs/heads/").removeprefix("refs/tags/").strip()
 
-    def _normalize_ref_type(self, value: Any) -> str:
-        if value is None or value == "":
-            return "branch"
-        if not isinstance(value, str):
-            raise TypeError("CNB ref type must be a string")
-        ref_type = value.strip().casefold()
-        if ref_type not in {"branch", "tag", "commit"}:
-            raise ValueError("CNB ref type must be branch, tag, or commit")
-        return ref_type
+    def _get_ref_selection(
+        self, datasource_parameters: Mapping[str, Any]
+    ) -> tuple[str, str]:
+        selections: list[tuple[str, str]] = []
+        for ref_type, parameter_name in (
+            ("branch", "branch"),
+            ("tag", "tag"),
+            ("commit", "commit"),
+        ):
+            ref = self._normalize_ref(datasource_parameters.get(parameter_name))
+            if ref:
+                selections.append((ref_type, ref))
+
+        if len(selections) > 1:
+            raise ValueError("Set only one of branch, tag, or commit")
+        return selections[0] if selections else ("", "")
 
     def _extract_commit_sha(self, payload: Any) -> str | None:
         if not isinstance(payload, dict):
@@ -616,8 +623,7 @@ class CNBDataSource(OnlineDocumentDatasource):
             repository_paths = self._parse_repository_paths(
                 self.runtime.credentials.get("repository_path")
             )
-        ref = self._normalize_ref(datasource_parameters.get("ref"))
-        ref_type = self._normalize_ref_type(datasource_parameters.get("ref_type"))
+        ref_type, ref = self._get_ref_selection(datasource_parameters)
 
         repository_scoped = bool(repository_paths)
         user = {} if repository_scoped else self._get_user()

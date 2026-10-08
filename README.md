@@ -121,21 +121,30 @@ cannot be read are shown with `(ref unavailable)` and their README/code files
 are skipped. This prevents one inaccessible repository from failing the whole
 datasource.
 
-### Ref type and value
+### Branch, tag, and commit
 
-Use `Ref type` together with `Branch, tag, or commit`:
+The import form exposes three optional fields:
 
-| Ref type | Value example | Resolution |
+```text
+Branch
+Tag
+Commit SHA
+```
+
+Set only one of them:
+
+| Field | Example | Resolution |
 | :- | :- | :- |
 | Branch | `develop` | Resolves the branch through the CNB branches API |
 | Tag | `v1.0.0` | Resolves the tag through the CNB tags API |
-| Commit | `a1b2c3d4...` | Uses the commit SHA directly |
+| Commit SHA | `a1b2c3d4...` | Uses the commit SHA directly |
 
-The plugin resolves Branch and Tag values to a commit SHA before reading files.
-This keeps branch and tag names distinct when both use the same name. Leave the
-ref value empty to use the repository default branch.
+If all three fields are empty, the repository default branch is used. Setting
+more than one field returns a validation error.
 
-For branch names containing slashes, enter the complete name directly, such as
+The plugin resolves branch and tag values to a commit SHA before reading files.
+This keeps branch and tag names distinct when both use the same name. For branch
+names containing slashes, enter the complete name directly, such as
 `feature/login`.
 
 ## Import Behavior
