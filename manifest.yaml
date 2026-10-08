@@ -1,0 +1,46 @@
+version: 0.0.3
+type: plugin
+author: haiminovo
+name: cnb_datasource
+repo: https://github.com/haiminovo/cnb_datasource
+contact: 623322116@qq.com
+label:
+  en_US: CNB
+  zh_Hans: CNB
+  ja_JP: CNB
+  pt_BR: CNB
+  zh_Hant: CNB
+description:
+  en_US: CNB datasource - import repositories, files, issues, and pull requests
+  zh_Hans: CNB 数据源 - 导入仓库、文件、Issue 和合并请求
+  ja_JP: CNB データソース - リポジトリ、ファイル、Issue、プルリクエストをインポート
+  pt_BR: Fonte de dados CNB - importe repositorios, arquivos, issues e pull requests
+  zh_Hant: CNB 資料來源 - 匯入倉庫、檔案、Issue 和合併請求
+icon: icon.svg
+icon_dark: icon-dark.svg
+resource:
+  memory: 268435456
+  permission: {}
+plugins:
+  datasources:
+    - provider/cnb.yaml
+meta:
+  version: 0.0.3
+  arch:
+    - amd64
+    - arm64
+  runner:
+    language: python
+    version: "3.12"
+    entrypoint: main
+  minimum_dify_version: 1.9.0
+created_at: 2026-09-30T00:00:00.000000+08:00
+privacy: PRIVACY.md
+verified: false
+tags:
+  - rag
+  - productivity
+network:
+  domains:
+    - api.cnb.cool
+    - cnb.cool

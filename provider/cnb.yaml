@@ -1,0 +1,183 @@
+identity:
+  author: haiminovo
+  name: cnb
+  label:
+    en_US: CNB
+    zh_Hans: CNB
+    ja_JP: CNB
+    pt_BR: CNB
+    zh_Hant: CNB
+  description:
+    en_US: Import repositories, files, issues, and pull requests from CNB
+    zh_Hans: 从 CNB 导入仓库、文件、Issue 和合并请求
+    ja_JP: CNB からリポジトリ、ファイル、Issue、プルリクエストをインポート
+    pt_BR: Importe repositorios, arquivos, issues e pull requests do CNB
+    zh_Hant: 從 CNB 匯入倉庫、檔案、Issue 和合併請求
+  icon: icon.svg
+provider_type: online_document
+help:
+  title:
+    en_US: Create a CNB access token
+    zh_Hans: 创建 CNB 访问令牌
+    ja_JP: CNB アクセストークンを作成
+    pt_BR: Criar um token de acesso do CNB
+    zh_Hant: 建立 CNB 存取權杖
+  url:
+    en_US: https://cnb.cool/profile/token
+    zh_Hans: https://cnb.cool/profile/token
+    ja_JP: https://cnb.cool/profile/token
+    pt_BR: https://cnb.cool/profile/token
+    zh_Hant: https://cnb.cool/profile/token
+oauth_schema:
+  client_schema:
+    - name: client_id
+      type: secret-input
+      required: true
+      label:
+        en_US: Client ID
+        zh_Hans: Client ID
+        ja_JP: クライアントID
+        pt_BR: ID do cliente
+        zh_Hant: Client ID
+    - name: client_secret
+      type: secret-input
+      required: true
+      label:
+        en_US: Client Secret
+        zh_Hans: Client Secret
+        ja_JP: クライアントシークレット
+        pt_BR: Segredo do cliente
+        zh_Hant: Client Secret
+    - name: cnb_web_url
+      type: text-input
+      required: false
+      default: https://cnb.cool
+      label:
+        en_US: CNB URL
+        zh_Hans: CNB 地址
+        ja_JP: CNB URL
+        pt_BR: URL do CNB
+        zh_Hant: CNB 網址
+    - name: cnb_api_base_url
+      type: text-input
+      required: false
+      default: https://api.cnb.cool
+      label:
+        en_US: CNB API URL
+        zh_Hans: CNB API 地址
+        ja_JP: CNB API URL
+        pt_BR: URL da API do CNB
+        zh_Hant: CNB API 網址
+  credentials_schema:
+    - name: access_token
+      type: secret-input
+      label:
+        en_US: Access Token
+        zh_Hans: Access Token
+        ja_JP: アクセストークン
+        pt_BR: Token de acesso
+        zh_Hant: 存取權杖
+    - name: refresh_token
+      type: secret-input
+      label:
+        en_US: Refresh Token
+        zh_Hans: Refresh Token
+        ja_JP: リフレッシュトークン
+        pt_BR: Token de atualizacao
+        zh_Hant: 重新整理權杖
+    - name: cnb_api_base_url
+      type: text-input
+      label:
+        en_US: CNB API URL
+        zh_Hans: CNB API 地址
+        ja_JP: CNB API URL
+        pt_BR: URL da API do CNB
+        zh_Hant: CNB API 網址
+    - name: cnb_web_url
+      type: text-input
+      label:
+        en_US: CNB URL
+        zh_Hans: CNB 地址
+        ja_JP: CNB URL
+        pt_BR: URL do CNB
+        zh_Hant: CNB 網址
+    - name: user_login
+      type: secret-input
+      label:
+        en_US: User Login
+        zh_Hans: 用户登录名
+        ja_JP: ユーザーログイン
+        pt_BR: Login do usuario
+        zh_Hant: 使用者登入名稱
+credentials_schema:
+  - name: access_token
+    type: secret-input
+    required: true
+    label:
+      en_US: CNB Access Token
+      zh_Hans: CNB 访问令牌
+      ja_JP: CNB アクセストークン
+      pt_BR: Token de acesso do CNB
+      zh_Hant: CNB 存取權杖
+    placeholder:
+      en_US: Your CNB access token
+      zh_Hans: 请输入 CNB 访问令牌
+      ja_JP: CNB アクセストークンを入力
+      pt_BR: Digite seu token do CNB
+      zh_Hant: 請輸入 CNB 存取權杖
+    help:
+      en_US: Create it in CNB Personal Settings > Access Tokens
+      zh_Hans: 在 CNB 个人设置 > 访问令牌中创建
+      ja_JP: CNB の個人設定 > アクセストークンで作成します
+      pt_BR: Crie em Configuracoes pessoais > Tokens de acesso
+      zh_Hant: 在 CNB 個人設定 > 存取權杖中建立
+    url: https://cnb.cool/profile/token
+  - name: cnb_api_base_url
+    type: text-input
+    required: false
+    default: https://api.cnb.cool
+    label:
+      en_US: CNB API URL
+      zh_Hans: CNB API 地址
+      ja_JP: CNB API URL
+      pt_BR: URL da API do CNB
+      zh_Hant: CNB API 網址
+    placeholder:
+      en_US: https://api.cnb.cool
+      zh_Hans: https://api.cnb.cool
+      ja_JP: https://api.cnb.cool
+      pt_BR: https://api.cnb.cool
+      zh_Hant: https://api.cnb.cool
+    help:
+      en_US: Use the default for CNB SaaS; change it for an enterprise deployment
+      zh_Hans: CNB SaaS 使用默认值；企业版可填写自有 API 地址
+      ja_JP: CNB SaaS は既定値、企業版は専用 API アドレスを指定します
+      pt_BR: Use o padrao no CNB SaaS; altere para uma implantacao empresarial
+      zh_Hant: CNB SaaS 使用預設值；企業版可填寫自有 API 網址
+  - name: cnb_web_url
+    type: text-input
+    required: false
+    default: https://cnb.cool
+    label:
+      en_US: CNB URL
+      zh_Hans: CNB 地址
+      ja_JP: CNB URL
+      pt_BR: URL do CNB
+      zh_Hant: CNB 網址
+    placeholder:
+      en_US: https://cnb.cool
+      zh_Hans: https://cnb.cool
+      ja_JP: https://cnb.cool
+      pt_BR: https://cnb.cool
+      zh_Hant: https://cnb.cool
+    help:
+      en_US: Used to generate issue and pull request links
+      zh_Hans: 用于生成 Issue 和合并请求链接
+      ja_JP: Issue とプルリクエストのリンク生成に使用します
+      pt_BR: Usado para gerar links de issues e pull requests
+      zh_Hant: 用於產生 Issue 和合併請求連結
+datasources:
+  - datasources/cnb.yaml
+extra:
+  python:
+    source: provider/cnb.py

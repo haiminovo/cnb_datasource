@@ -1,0 +1,135 @@
+identity:
+  name: cnb
+  author: haiminovo
+  label:
+    en_US: CNB Repository
+    zh_Hans: CNB 仓库
+    ja_JP: CNB リポジトリ
+    pt_BR: Repositorio CNB
+    zh_Hant: CNB 倉庫
+  icon: icon.svg
+description:
+  en_US: Import repositories, files, issues, and pull requests from CNB
+  zh_Hans: 从 CNB 导入仓库、文件、Issue 和合并请求
+  ja_JP: CNB からリポジトリ、ファイル、Issue、プルリクエストをインポート
+  pt_BR: Importe repositorios, arquivos, issues e pull requests do CNB
+  zh_Hant: 從 CNB 匯入倉庫、檔案、Issue 和合併請求
+parameters:
+  - name: repository_paths
+    type: string
+    required: false
+    label:
+      en_US: Repository paths
+      zh_Hans: 指定仓库路径
+      ja_JP: リポジトリパス
+      pt_BR: Caminhos dos repositorios
+      zh_Hant: 指定倉庫路徑
+    description:
+      en_US: Optional repository paths separated by commas or new lines, such as group/repository
+      zh_Hans: 可选，多个仓库路径用逗号或换行分隔，例如 group/repository
+      ja_JP: 任意。group/repository 形式のパスをカンマまたは改行で区切ります
+      pt_BR: Opcional. Separe caminhos como grupo/repositorio por virgula ou linha
+      zh_Hant: 選填，多個倉庫路徑用逗號或換行分隔，例如 group/repository
+  - name: max_repos
+    type: number
+    required: false
+    default: 20
+    label:
+      en_US: Maximum repositories
+      zh_Hans: 最多导入仓库数
+      ja_JP: 最大リポジトリ数
+      pt_BR: Numero maximo de repositorios
+      zh_Hant: 最多匯入倉庫數
+    description:
+      en_US: Number of recent repositories to scan, from 1 to 100
+      zh_Hans: 扫描最近更新的仓库数量，范围 1 到 100
+      ja_JP: 最近更新されたリポジトリの数（1 から 100）
+      pt_BR: Numero de repositorios recentes para verificar, de 1 a 100
+      zh_Hant: 掃描最近更新的倉庫數量，範圍 1 到 100
+  - name: include_code_files
+    type: boolean
+    required: false
+    default: true
+    label:
+      en_US: Include code files
+      zh_Hans: 导入代码文件
+      ja_JP: コードファイルを含める
+      pt_BR: Incluir arquivos de codigo
+      zh_Hant: 匯入程式碼檔案
+    description:
+      en_US: List text and source files as importable documents
+      zh_Hans: 将文本和源码文件加入可导入文档列表
+      ja_JP: テキストおよびソースファイルをインポート対象に含めます
+      pt_BR: Lista arquivos de texto e codigo como documentos importaveis
+      zh_Hant: 將文字和原始碼檔案加入可匯入文件清單
+  - name: max_files_per_repo
+    type: number
+    required: false
+    default: 100
+    label:
+      en_US: Code files per repository
+      zh_Hans: 每个仓库代码文件数
+      ja_JP: リポジトリごとのコードファイル数
+      pt_BR: Arquivos de codigo por repositorio
+      zh_Hant: 每個倉庫程式碼檔案數
+    description:
+      en_US: Maximum importable code files per repository, from 0 to 1000
+      zh_Hans: 每个仓库最多加入的代码文件数，范围 0 到 1000
+      ja_JP: リポジトリごとの最大コードファイル数（0 から 1000）
+      pt_BR: Maximo de arquivos de codigo por repositorio, de 0 a 1000
+      zh_Hant: 每個倉庫最多加入的程式碼檔案數，範圍 0 到 1000
+  - name: issues_per_repo
+    type: number
+    required: false
+    default: 5
+    label:
+      en_US: Issues per repository
+      zh_Hans: 每个仓库的 Issue 数
+      ja_JP: リポジトリごとの Issue 数
+      pt_BR: Issues por repositorio
+      zh_Hant: 每個倉庫的 Issue 數
+    description:
+      en_US: Number of recent issues to scan per repository, from 0 to 50
+      zh_Hans: 每个仓库扫描最近 Issue 数量，范围 0 到 50
+      ja_JP: リポジトリごとに取得する最近の Issue 数（0 から 50）
+      pt_BR: Numero de issues recentes por repositorio, de 0 a 50
+      zh_Hant: 每個倉庫掃描最近 Issue 數量，範圍 0 到 50
+  - name: pulls_per_repo
+    type: number
+    required: false
+    default: 5
+    label:
+      en_US: Pull requests per repository
+      zh_Hans: 每个仓库的 PR 数
+      ja_JP: リポジトリごとの PR 数
+      pt_BR: Pull requests por repositorio
+      zh_Hant: 每個倉庫的 PR 數
+    description:
+      en_US: Number of recent pull requests to scan per repository, from 0 to 50
+      zh_Hans: 每个仓库扫描最近 PR 数量，范围 0 到 50
+      ja_JP: リポジトリごとに取得する最近の PR 数（0 から 50）
+      pt_BR: Numero de pull requests recentes por repositorio, de 0 a 50
+      zh_Hant: 每個倉庫掃描最近 PR 數量，範圍 0 到 50
+
+output_schema:
+  type: object
+  properties:
+    page_id:
+      type: string
+      description: page id
+    content:
+      type: string
+      description: page content
+    title:
+      type: string
+      description: page title
+    project:
+      type: string
+      description: repository path
+    type:
+      type: string
+      description: content type
+
+extra:
+  python:
+    source: datasources/cnb.py
