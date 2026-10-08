@@ -182,6 +182,43 @@ class CNBDataSourceTest(unittest.TestCase):
             ["jcsk100/cube/cube-account-ui", "jcsk100/roc/roc"],
         )
 
+    def test_get_pages_with_ref(self):
+        datasource = build_datasource()
+        calls = []
+
+        def fake_request(method, path, params=None):
+            calls.append((path, params))
+            if path == "/user":
+                return {"id": "u1", "username": "alice"}
+            if path == "/team/demo/-/git/contents":
+                return {
+                    "entries": [
+                        {"name": "README.md", "path": "README.md", "type": "blob"}
+                    ]
+                }
+            raise AssertionError(f"unexpected path: {path}")
+
+        datasource._request = fake_request
+        response = datasource._get_pages(
+            {
+                "repository_paths": "team/demo",
+                "ref": "develop",
+                "max_files_per_repo": 0,
+                "issues_per_repo": 0,
+                "pulls_per_repo": 0,
+            }
+        )
+
+        pages = response.result[0].pages
+        self.assertEqual(
+            [page.page_id for page in pages],
+            [
+                "project:team/demo|ZGV2ZWxvcA",
+                "file:team/demo|ZGV2ZWxvcA:README.md",
+            ],
+        )
+        self.assertIn(("/team/demo/-/git/contents", {"ref": "develop"}), calls)
+
     def test_issue_content(self):
         datasource = build_datasource()
 

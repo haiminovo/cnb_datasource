@@ -280,6 +280,47 @@ class CNBDataSource(OnlineDocumentDatasource):
             raise ValueError("Invalid CNB file path")
         return "/".join(quote(part, safe="") for part in parts)
 
+    def _normalize_ref(self, value: Any) -> str:
+        if value is None:
+            return ""
+        if not isinstance(value, str):
+            raise TypeError("CNB ref must be a string")
+        return value.strip()
+
+    def _encode_ref(self, ref: str) -> str:
+        if not ref:
+            return ""
+        return base64.urlsafe_b64encode(ref.encode("utf-8")).decode("ascii").rstrip("=")
+
+    def _decode_ref(self, encoded_ref: str) -> str:
+        if not encoded_ref:
+            return ""
+        padding = "=" * (-len(encoded_ref) % 4)
+        try:
+            return base64.urlsafe_b64decode(encoded_ref + padding).decode("utf-8")
+        except (binascii.Error, UnicodeDecodeError) as exc:
+            raise ValueError("Invalid encoded CNB ref") from exc
+
+    def _make_project_page_id(self, repo_path: str, ref: str = "") -> str:
+        if not ref:
+            return f"project:{repo_path}"
+        return f"project:{repo_path}|{self._encode_ref(ref)}"
+
+    def _make_file_page_id(self, repo_path: str, file_path: str, ref: str = "") -> str:
+        if not ref:
+            return f"file:{repo_path}:{file_path}"
+        return f"file:{repo_path}|{self._encode_ref(ref)}:{file_path}"
+
+    def _parse_project_page_id(self, page_id: str) -> tuple[str, str]:
+        repo_token = page_id[len("project:") :]
+        return self._parse_repo_ref_token(repo_token)
+
+    def _parse_repo_ref_token(self, token: str) -> tuple[str, str]:
+        repo_path, separator, encoded_ref = token.partition("|")
+        if not separator:
+            return repo_path, ""
+        return repo_path, self._decode_ref(encoded_ref)
+
     def _get_user(self) -> dict[str, Any]:
         user = self._request("GET", "/user")
         if not isinstance(user, dict):
@@ -348,7 +389,9 @@ class CNBDataSource(OnlineDocumentDatasource):
             return False
         return file_name[dot_index:] in self._CODE_FILE_EXTENSIONS
 
-    def _list_code_files(self, repo_path: str, max_files: int) -> list[str]:
+    def _list_code_files(
+        self, repo_path: str, max_files: int, ref: str = ""
+    ) -> list[str]:
         if max_files <= 0:
             return []
 
@@ -375,7 +418,11 @@ class CNBDataSource(OnlineDocumentDatasource):
                 path = f"/{encoded_repo}/-/git/contents"
 
             try:
-                payload = self._request("GET", path)
+                payload = self._request(
+                    "GET",
+                    path,
+                    {"ref": ref} if ref else None,
+                )
             except CNBAPIError:
                 continue
             if not isinstance(payload, dict):
@@ -407,13 +454,21 @@ class CNBDataSource(OnlineDocumentDatasource):
 
         return files
 
-    def _find_readme_path(self, repo_path: str) -> str | None:
+    def _find_readme_path(
+        self,
+        repo_path: str,
+        ref: str = "",
+        raise_on_error: bool = False,
+    ) -> str | None:
         try:
             root = self._request(
                 "GET",
                 f"/{self._encode_repo_path(repo_path)}/-/git/contents",
+                {"ref": ref} if ref else None,
             )
         except CNBAPIError:
+            if raise_on_error:
+                raise
             return None
         if not isinstance(root, dict):
             return None
@@ -460,6 +515,7 @@ class CNBDataSource(OnlineDocumentDatasource):
         repository_paths = self._parse_repository_paths(
             datasource_parameters.get("repository_paths")
         )
+        ref = self._normalize_ref(datasource_parameters.get("ref"))
 
         user = self._get_user()
         repositories = self._get_repositories(max_repos, repository_paths)
@@ -476,22 +532,27 @@ class CNBDataSource(OnlineDocumentDatasource):
                 repo.get("updated_at"),
                 repo.get("created_at"),
             )
-            project_page_id = f"project:{repo_path}"
+            ref_label = ref or "default branch"
+            project_page_id = self._make_project_page_id(repo_path, ref)
             pages.append(
                 {
                     "page_id": project_page_id,
-                    "page_name": repo_name,
+                    "page_name": f"{repo_name} ({ref_label})",
                     "last_edited_time": last_updated,
                     "type": "project",
                 }
             )
 
-            readme_path = self._find_readme_path(repo_path)
+            readme_path = self._find_readme_path(
+                repo_path,
+                ref,
+                raise_on_error=bool(ref),
+            )
             if readme_path:
                 pages.append(
                     {
-                        "page_id": f"file:{repo_path}:{readme_path}",
-                        "page_name": f"{repo_name} - {readme_path}",
+                        "page_id": self._make_file_page_id(repo_path, readme_path, ref),
+                        "page_name": f"{repo_name} ({ref_label}) - {readme_path}",
                         "last_edited_time": last_updated,
                         "type": "file",
                         "parent_id": project_page_id,
@@ -499,13 +560,21 @@ class CNBDataSource(OnlineDocumentDatasource):
                 )
 
             if include_code_files and max_files_per_repo > 0:
-                for code_path in self._list_code_files(repo_path, max_files_per_repo):
+                for code_path in self._list_code_files(
+                    repo_path,
+                    max_files_per_repo,
+                    ref,
+                ):
                     if code_path == readme_path:
                         continue
                     pages.append(
                         {
-                            "page_id": f"file:{repo_path}:{code_path}",
-                            "page_name": f"{repo_name} - {code_path}",
+                            "page_id": self._make_file_page_id(
+                                repo_path,
+                                code_path,
+                                ref,
+                            ),
+                            "page_name": f"{repo_name} ({ref_label}) - {code_path}",
                             "last_edited_time": last_updated,
                             "type": "file",
                             "parent_id": project_page_id,
@@ -618,7 +687,7 @@ class CNBDataSource(OnlineDocumentDatasource):
     def _get_project_content(
         self, page_id: str
     ) -> Generator[DatasourceMessage, None, None]:
-        repo_path = page_id[len("project:") :]
+        repo_path, ref = self._parse_project_page_id(page_id)
         repo = self._request("GET", f"/{self._encode_repo_path(repo_path)}")
         if not isinstance(repo, dict):
             raise TypeError("CNB repository response is not a JSON object")
@@ -626,6 +695,7 @@ class CNBDataSource(OnlineDocumentDatasource):
         path = str(repo.get("path") or repo_path)
         content = f"# {repo.get('name') or path}\n\n"
         content += f"**Repository:** {path}\n"
+        content += f"**Ref:** {ref or 'default branch'}\n"
         content += f"**Description:** {repo.get('description') or 'No description'}\n"
         content += f"**Visibility:** {repo.get('visibility_level') or 'unknown'}\n"
         content += f"**Status:** {repo.get('status') or 'unknown'}\n"
@@ -646,10 +716,10 @@ class CNBDataSource(OnlineDocumentDatasource):
         if topics:
             content += f"**Topics:** {topics}\n\n"
 
-        readme_path = self._find_readme_path(path)
+        readme_path = self._find_readme_path(path, ref)
         if readme_path:
             try:
-                readme = self._read_file(path, readme_path)
+                readme = self._read_file(path, readme_path, ref)
                 content += f"## {readme_path}\n\n{readme}"
             except (CNBAPIError, ValueError):
                 content += "## README\n\nUnable to read the README file."
@@ -660,6 +730,7 @@ class CNBDataSource(OnlineDocumentDatasource):
         yield self.create_variable_message("page_id", page_id)
         yield self.create_variable_message("title", str(repo.get("name") or path))
         yield self.create_variable_message("project", path)
+        yield self.create_variable_message("ref", ref)
         yield self.create_variable_message("type", "project")
 
     def _get_file_content(
@@ -668,8 +739,9 @@ class CNBDataSource(OnlineDocumentDatasource):
         parts = page_id.split(":", 2)
         if len(parts) != 3:
             raise ValueError(f"Invalid CNB file page id: {page_id}")
-        _, repo_path, file_path = parts
-        content = self._read_file(repo_path, file_path)
+        _, repo_ref, file_path = parts
+        repo_path, ref = self._parse_repo_ref_token(repo_ref)
+        content = self._read_file(repo_path, file_path, ref)
         file_name = file_path.rsplit("/", 1)[-1]
 
         yield self.create_variable_message("content", content)
@@ -677,14 +749,16 @@ class CNBDataSource(OnlineDocumentDatasource):
         yield self.create_variable_message("title", file_name)
         yield self.create_variable_message("project", repo_path)
         yield self.create_variable_message("file_path", file_path)
+        yield self.create_variable_message("ref", ref)
         yield self.create_variable_message("type", "file")
 
-    def _read_file(self, repo_path: str, file_path: str) -> str:
+    def _read_file(self, repo_path: str, file_path: str, ref: str = "") -> str:
         encoded_repo = self._encode_repo_path(repo_path)
         encoded_file = self._encode_file_path(file_path)
         payload = self._request(
             "GET",
             f"/{encoded_repo}/-/git/contents/{encoded_file}",
+            {"ref": ref} if ref else None,
         )
         if not isinstance(payload, dict):
             raise TypeError("CNB file response is not a JSON object")

@@ -55,6 +55,8 @@ endpoints.
 
 - `Repository paths`: optional comma-separated paths such as
   `group/repository`
+- `Branch, tag, or commit`: optional CNB `ref`; leave empty for the default
+  branch
 - `Maximum repositories`: default `20`
 - `Include code files`: enabled by default
 - `Code files per repository`: default `100`
@@ -67,8 +69,8 @@ issue, and pull request documents that should be imported.
 ## Import Behavior
 
 - Access is read-only.
-- The plugin reads the repository default branch through CNB `HEAD`.
-- Other branches, tags, and individual commits are not selected.
+- Leave the ref empty to read the repository default branch through CNB `HEAD`.
+- Set the ref to a branch, tag, or commit SHA to import that version.
 - Generated output, dependency, cache, binary, and lock directories are skipped.
 - Code files are exposed as separate Dify documents.
 

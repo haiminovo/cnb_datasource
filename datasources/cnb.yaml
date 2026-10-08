@@ -30,6 +30,21 @@ parameters:
       ja_JP: 任意。group/repository 形式のパスをカンマまたは改行で区切ります
       pt_BR: Opcional. Separe caminhos como grupo/repositorio por virgula ou linha
       zh_Hant: 選填，多個倉庫路徑用逗號或換行分隔，例如 group/repository
+  - name: ref
+    type: string
+    required: false
+    label:
+      en_US: Branch, tag, or commit
+      zh_Hans: 分支、标签或 Commit
+      ja_JP: ブランチ、タグ、コミット
+      pt_BR: Branch, tag ou commit
+      zh_Hant: 分支、標籤或 Commit
+    description:
+      en_US: Optional CNB ref. Leave empty to use the repository default branch
+      zh_Hans: 可选 CNB ref，留空使用仓库默认分支
+      ja_JP: 任意の CNB ref。空欄の場合は既定ブランチを使用します
+      pt_BR: Ref opcional do CNB. Deixe vazio para usar a branch padrao
+      zh_Hant: 選填 CNB ref，留空使用倉庫預設分支
   - name: max_repos
     type: number
     required: false
@@ -129,6 +144,9 @@ output_schema:
     type:
       type: string
       description: content type
+    ref:
+      type: string
+      description: selected branch, tag, or commit
 
 extra:
   python:
