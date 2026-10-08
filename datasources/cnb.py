@@ -577,21 +577,33 @@ class CNBDataSource(OnlineDocumentDatasource):
             )
             ref_label = ref or "default branch"
             project_page_id = self._make_project_page_id(repo_path, ref)
+            ref_available = True
+            try:
+                readme_path = self._find_readme_path(
+                    repo_path,
+                    ref,
+                    raise_on_error=bool(ref),
+                )
+            except CNBAPIError:
+                readme_path = None
+                ref_available = False
+            project_page_name = (
+                f"{repo_name} ({ref})"
+                if ref_available and ref
+                else f"{repo_name} ({ref} unavailable)"
+                if ref
+                else f"{repo_name} ({ref_label})"
+            )
             pages.append(
                 {
                     "page_id": project_page_id,
-                    "page_name": f"{repo_name} ({ref_label})",
+                    "page_name": project_page_name,
                     "last_edited_time": last_updated,
                     "type": "project",
                 }
             )
 
-            readme_path = self._find_readme_path(
-                repo_path,
-                ref,
-                raise_on_error=bool(ref),
-            )
-            if readme_path:
+            if ref_available and readme_path:
                 pages.append(
                     {
                         "page_id": self._make_file_page_id(repo_path, readme_path, ref),
@@ -602,7 +614,7 @@ class CNBDataSource(OnlineDocumentDatasource):
                     }
                 )
 
-            if include_code_files and max_files_per_repo > 0:
+            if ref_available and include_code_files and max_files_per_repo > 0:
                 for code_path in self._list_code_files(
                     repo_path,
                     max_files_per_repo,

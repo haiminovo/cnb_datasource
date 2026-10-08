@@ -236,6 +236,31 @@ class CNBDataSourceTest(unittest.TestCase):
         )
         self.assertIn(("/team/demo/-/git/contents", {"ref": "develop"}), calls)
 
+    def test_ref_permission_error_skips_repo_content(self):
+        datasource = build_datasource()
+
+        def fake_request(method, path, params=None):
+            if path == "/user":
+                return {"id": "u1", "username": "alice"}
+            if path == "/team/demo/-/git/contents":
+                raise CNBAPIError(403, "you do not have permission")
+            raise AssertionError(f"unexpected path: {path}")
+
+        datasource._request = fake_request
+        response = datasource._get_pages(
+            {
+                "repository_paths": "team/demo",
+                "ref": "develop",
+                "max_files_per_repo": 100,
+                "issues_per_repo": 0,
+                "pulls_per_repo": 0,
+            }
+        )
+
+        pages = response.result[0].pages
+        self.assertEqual(len(pages), 1)
+        self.assertEqual(pages[0].page_name, "demo (develop unavailable)")
+
     def test_issue_content(self):
         datasource = build_datasource()
 

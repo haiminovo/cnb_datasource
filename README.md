@@ -101,6 +101,12 @@ Do not enter only the repository name, such as `cube-account-ui`. The full
 namespace path is required. Leave this field empty to scan all repositories
 accessible to the configured CNB token.
 
+If you leave repository paths empty and also set a ref, the plugin applies that
+ref to every accessible repository. Repositories where the ref does not exist or
+cannot be read are shown with `(ref unavailable)` and their README/code files
+are skipped. This prevents one inaccessible repository from failing the whole
+datasource.
+
 ### Branch, tag, or commit
 
 Leave `Branch, tag, or commit` empty to use the repository default branch.

@@ -19,11 +19,11 @@ parameters:
     type: string
     required: false
     label:
-      en_US: Repository paths (optional)
-      zh_Hans: 指定仓库路径（可选）
-      ja_JP: リポジトリパス（任意）
-      pt_BR: Caminhos dos repositorios (opcional)
-      zh_Hant: 指定倉庫路徑（選填）
+      en_US: Repository paths (recommended)
+      zh_Hans: 指定仓库路径（推荐）
+      ja_JP: リポジトリパス（推奨）
+      pt_BR: Caminhos dos repositorios (recomendado)
+      zh_Hant: 指定倉庫路徑（建議）
     placeholder:
       en_US: jcsk100/cube/cube-account-ui
       zh_Hans: jcsk100/cube/cube-account-ui
