@@ -1,6 +1,6 @@
 [project]
 name = "cnb_datasource"
-version = "0.0.7"
+version = "0.0.8"
 description = "CNB datasource plugin for Dify"
 readme = "README.md"
 requires-python = ">=3.12"

@@ -19,11 +19,11 @@ parameters:
     type: string
     required: false
     label:
-      en_US: Repository paths (recommended)
-      zh_Hans: 指定仓库路径（推荐）
-      ja_JP: リポジトリパス（推奨）
-      pt_BR: Caminhos dos repositorios (recomendado)
-      zh_Hant: 指定倉庫路徑（建議）
+      en_US: Repository paths (optional)
+      zh_Hans: 指定仓库路径（可选）
+      ja_JP: リポジトリパス（任意）
+      pt_BR: Caminhos dos repositorios (opcional)
+      zh_Hant: 指定倉庫路徑（選填）
     placeholder:
       en_US: jcsk100/cube/cube-account-ui
       zh_Hans: jcsk100/cube/cube-account-ui
@@ -31,11 +31,11 @@ parameters:
       pt_BR: jcsk100/cube/cube-account-ui
       zh_Hant: jcsk100/cube/cube-account-ui
     description:
-      en_US: Use group/repository or the full cnb.cool URL. Separate multiple paths with commas or new lines. Leave empty to list all accessible repositories
-      zh_Hans: 填 group/repository 或完整 cnb.cool 地址，多个路径用逗号或换行分隔；留空时列出所有有权限的仓库
-      ja_JP: group/repository または完全な cnb.cool URL を指定します。複数はカンマまたは改行で区切ります。空欄の場合はアクセス可能な全リポジトリを一覧表示します
-      pt_BR: Use grupo/repositorio ou a URL completa do cnb.cool. Separe varios caminhos por virgula ou linha. Deixe vazio para listar todos os repositorios acessiveis
-      zh_Hant: 填 group/repository 或完整 cnb.cool 網址，多個路徑用逗號或換行分隔；留空時列出所有有權限的倉庫
+      en_US: "Optional. Example: jcsk100/cube/cube-account-ui. Use a full cnb.cool URL or group/repository path; separate multiple paths with commas or new lines. Leave empty to list all accessible repositories"
+      zh_Hans: 选填。示例：jcsk100/cube/cube-account-ui；可填完整 cnb.cool 地址或 group/repository，多个路径用逗号或换行分隔；留空时列出所有有权限的仓库
+      ja_JP: 任意。例：jcsk100/cube/cube-account-ui。完全な cnb.cool URL または group/repository を指定し、複数はカンマまたは改行で区切ります。空欄の場合はアクセス可能な全リポジトリを一覧表示します
+      pt_BR: "Opcional. Exemplo: jcsk100/cube/cube-account-ui. Use uma URL cnb.cool ou caminho grupo/repositorio; separe varios por virgula ou linha. Deixe vazio para listar todos os repositorios acessiveis"
+      zh_Hant: 選填。範例：jcsk100/cube/cube-account-ui；可填完整 cnb.cool 網址或 group/repository，多個路徑用逗號或換行分隔；留空時列出所有有權限的倉庫
   - name: ref
     type: string
     required: false
