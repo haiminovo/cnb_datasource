@@ -113,11 +113,11 @@ parameters:
       pt_BR: Numero maximo de repositorios
       zh_Hant: 最多匯入倉庫數
     description:
-      en_US: Number of recent repositories to scan, from 1 to 100
-      zh_Hans: 扫描最近更新的仓库数量，范围 1 到 100
-      ja_JP: 最近更新されたリポジトリの数（1 から 100）
-      pt_BR: Numero de repositorios recentes para verificar, de 1 a 100
-      zh_Hant: 掃描最近更新的倉庫數量，範圍 1 到 100
+      en_US: Number of recent repositories to discover when repository paths are empty, from 1 to 100
+      zh_Hans: 仓库路径留空时，最多发现多少个最近更新的仓库，范围 1 到 100
+      ja_JP: リポジトリパスが空の場合に取得する最近のリポジトリ数（1 から 100）
+      pt_BR: Numero de repositorios recentes quando os caminhos estao vazios, de 1 a 100
+      zh_Hant: 倉庫路徑留空時，最多發現多少個最近更新的倉庫，範圍 1 到 100
   - name: include_code_files
     type: boolean
     required: false

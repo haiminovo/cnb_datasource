@@ -57,6 +57,30 @@ class CNBDatasourceProvider(DatasourceProvider):
             )
         return normalized
 
+    def _normalize_repository_path(self, value: Any) -> str:
+        if not isinstance(value, str) or not value.strip():
+            return ""
+        raw = value.strip()
+        if "://" in raw:
+            parsed = urllib.parse.urlparse(raw)
+            host = (parsed.hostname or "").casefold()
+            if host not in {"cnb.cool", "www.cnb.cool", "api.cnb.cool"}:
+                raise ToolProviderCredentialValidationError(
+                    "CNB repository URL must use cnb.cool"
+                )
+            raw = urllib.parse.unquote(parsed.path)
+        raw = raw.strip("/")
+        if "/-/" in raw:
+            raw = raw.split("/-/", 1)[0]
+        if raw.casefold().endswith(".git"):
+            raw = raw[:-4].strip("/")
+        parts = [part for part in raw.split("/") if part]
+        if len(parts) < 2 or any(part in {".", ".."} for part in parts):
+            raise ToolProviderCredentialValidationError(
+                "Repository path must use the format organization/group/repository"
+            )
+        return "/".join(parts)
+
     def _safe_json_response(self, response: requests.Response) -> Any:
         if response.status_code >= 400:
             raise DatasourceOAuthError(
@@ -79,29 +103,41 @@ class CNBDatasourceProvider(DatasourceProvider):
             self._DEFAULT_API_BASE_URL,
             "CNB API URL",
         )
+        repository_path = self._normalize_repository_path(
+            credentials.get("repository_path")
+        )
         headers = {
             "Accept": "application/json",
             "Authorization": f"Bearer {access_token.strip()}",
             "User-Agent": "Dify-CNB-Datasource",
         }
 
+        validation_urls = (
+            [
+                f"{api_base_url}/{repository_path}",
+                f"{api_base_url}/{repository_path}/-/git/contents",
+            ]
+            if repository_path
+            else [f"{api_base_url}/user"]
+        )
+
         try:
-            response = self._get_requests_session().get(
-                f"{api_base_url}/user",
-                headers=headers,
-                timeout=10,
-            )
+            session = self._get_requests_session()
+            for validation_url in validation_urls:
+                response = session.get(validation_url, headers=headers, timeout=10)
+                if response.status_code == 401:
+                    raise ToolProviderCredentialValidationError(
+                        "Invalid CNB access token"
+                    )
+                if response.status_code >= 400:
+                    raise ToolProviderCredentialValidationError(
+                        f"CNB API error: {response.status_code} - "
+                        f"{response.text[:1000]}"
+                    )
         except requests.exceptions.RequestException as exc:
             raise ToolProviderCredentialValidationError(
                 f"Failed to connect to CNB: {exc}"
             ) from exc
-
-        if response.status_code == 401:
-            raise ToolProviderCredentialValidationError("Invalid CNB access token")
-        if response.status_code >= 400:
-            raise ToolProviderCredentialValidationError(
-                f"CNB API error: {response.status_code} - {response.text[:1000]}"
-            )
 
     def _oauth_get_authorization_url(
         self, redirect_uri: str, system_credentials: Mapping[str, Any]

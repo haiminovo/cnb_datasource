@@ -68,6 +68,15 @@ oauth_schema:
         ja_JP: CNB API URL
         pt_BR: URL da API do CNB
         zh_Hant: CNB API 網址
+    - name: repository_path
+      type: text-input
+      required: false
+      label:
+        en_US: Repository path
+        zh_Hans: 仓库路径
+        ja_JP: リポジトリパス
+        pt_BR: Caminho do repositorio
+        zh_Hant: 倉庫路徑
   credentials_schema:
     - name: access_token
       type: secret-input
@@ -101,6 +110,14 @@ oauth_schema:
         ja_JP: CNB URL
         pt_BR: URL do CNB
         zh_Hant: CNB 網址
+    - name: repository_path
+      type: text-input
+      label:
+        en_US: Repository path
+        zh_Hans: 仓库路径
+        ja_JP: リポジトリパス
+        pt_BR: Caminho do repositorio
+        zh_Hant: 倉庫路徑
     - name: user_login
       type: secret-input
       label:
@@ -176,6 +193,27 @@ credentials_schema:
       ja_JP: Issue とプルリクエストのリンク生成に使用します
       pt_BR: Usado para gerar links de issues e pull requests
       zh_Hant: 用於產生 Issue 和合併請求連結
+  - name: repository_path
+    type: text-input
+    required: false
+    label:
+      en_US: Repository path for repository-scoped tokens
+      zh_Hans: 仓库级 Token 使用的仓库路径
+      ja_JP: リポジトリ単位トークン用のリポジトリパス
+      pt_BR: Caminho do repositorio para token de repositorio
+      zh_Hant: 倉庫級 Token 使用的倉庫路徑
+    placeholder:
+      en_US: organization/group/repository
+      zh_Hans: organization/group/repository
+      ja_JP: organization/group/repository
+      pt_BR: organization/group/repository
+      zh_Hant: organization/group/repository
+    help:
+      en_US: Optional. When set, validation skips account APIs and checks this repository directly
+      zh_Hans: 选填。填写后校验会跳过账号接口，直接检查该仓库
+      ja_JP: 任意。設定するとアカウント API をスキップし、このリポジトリを直接検証します
+      pt_BR: Opcional. Quando definido, a validacao ignora APIs de conta e verifica este repositorio
+      zh_Hant: 選填。填寫後驗證會跳過帳號介面，直接檢查該倉庫
 datasources:
   - datasources/cnb.yaml
 extra:

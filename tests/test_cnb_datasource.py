@@ -287,6 +287,36 @@ class CNBDataSourceTest(unittest.TestCase):
         self.assertEqual(len(pages), 1)
         self.assertEqual(pages[0].page_name, "demo (develop unavailable)")
 
+    def test_repository_scoped_credentials_skip_account_apis(self):
+        datasource = build_datasource(
+            credentials={
+                "access_token": "test-token",
+                "cnb_api_base_url": "https://api.cnb.cool",
+                "cnb_web_url": "https://cnb.cool",
+                "repository_path": "team/demo",
+            }
+        )
+        calls = []
+
+        def fake_request(method, path, params=None):
+            calls.append(path)
+            if path == "/team/demo/-/git/contents":
+                return {"entries": []}
+            raise AssertionError(f"unexpected path: {path}")
+
+        datasource._request = fake_request
+        response = datasource._get_pages(
+            {
+                "max_files_per_repo": 0,
+                "issues_per_repo": 0,
+                "pulls_per_repo": 0,
+            }
+        )
+
+        self.assertEqual(response.result[0].workspace_name, "CNB Repositories")
+        self.assertNotIn("/user", calls)
+        self.assertNotIn("/user/repos", calls)
+
     def test_issue_content(self):
         datasource = build_datasource()
 
@@ -340,6 +370,30 @@ class CNBProviderTest(unittest.TestCase):
         self.assertEqual(
             session.get.call_args.kwargs["headers"]["Authorization"],
             "Bearer secret",
+        )
+
+    def test_validate_repository_scoped_credentials(self):
+        provider = CNBDatasourceProvider()
+        response = Mock(status_code=200, text="")
+        session = Mock()
+        session.get.return_value = response
+
+        with patch.object(provider, "_get_requests_session", return_value=session):
+            provider._validate_credentials(
+                {
+                    "access_token": "secret",
+                    "repository_path": "team/demo",
+                }
+            )
+
+        self.assertEqual(session.get.call_count, 2)
+        urls = [call.args[0] for call in session.get.call_args_list]
+        self.assertEqual(
+            urls,
+            [
+                "https://api.cnb.cool/team/demo",
+                "https://api.cnb.cool/team/demo/-/git/contents",
+            ],
         )
 
 

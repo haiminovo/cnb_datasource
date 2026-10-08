@@ -40,6 +40,17 @@ repo-notes:r
 Private repositories also require the matching private-resource scope and
 repository access.
 
+For a repository-scoped token, set `Repository path` in the datasource
+credentials. Validation then skips `/user` and `/user/repos`, and checks only:
+
+```text
+GET /organization/group/repository
+GET /organization/group/repository/-/git/contents
+```
+
+That mode requires `repo-basic-info:r` and `repo-code:r`, but does not require
+`account-profile:r` or `account-engage:r`.
+
 ### 2. Connect the datasource in Dify
 
 Configure:
@@ -100,6 +111,9 @@ organization/other/repository
 Do not enter only the repository name, such as `repository`. The full
 namespace path is required. Leave this field empty to scan all repositories
 accessible to the configured CNB token.
+
+`Maximum repositories` only limits automatic repository discovery. Explicit
+repository paths are all processed and are not truncated by that value.
 
 If you leave repository paths empty and also set a ref, the plugin applies that
 ref to every accessible repository. Repositories where the ref does not exist or

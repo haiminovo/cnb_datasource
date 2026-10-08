@@ -406,7 +406,7 @@ class CNBDataSource(OnlineDocumentDatasource):
     ) -> list[dict[str, Any]]:
         if repository_paths:
             repositories = []
-            for repo_path in repository_paths[:max_repos]:
+            for repo_path in repository_paths:
                 repositories.append(
                     {
                         "path": repo_path,
@@ -612,10 +612,15 @@ class CNBDataSource(OnlineDocumentDatasource):
         repository_paths = self._parse_repository_paths(
             datasource_parameters.get("repository_paths")
         )
+        if not repository_paths:
+            repository_paths = self._parse_repository_paths(
+                self.runtime.credentials.get("repository_path")
+            )
         ref = self._normalize_ref(datasource_parameters.get("ref"))
         ref_type = self._normalize_ref_type(datasource_parameters.get("ref_type"))
 
-        user = self._get_user()
+        repository_scoped = bool(repository_paths)
+        user = {} if repository_scoped else self._get_user()
         repositories = self._get_repositories(max_repos, repository_paths)
         pages: list[dict[str, Any]] = []
 
@@ -771,8 +776,14 @@ class CNBDataSource(OnlineDocumentDatasource):
 
         workspace_name = (
             f"{user.get('nickname') or user.get('username') or 'CNB'}'s CNB"
+            if user
+            else "CNB Repositories"
         )
-        workspace_id = str(user.get("id") or user.get("username") or "cnb")
+        workspace_id = (
+            str(user.get("id") or user.get("username") or "cnb")
+            if user
+            else "|".join(repository_paths)
+        )
         workspace_icon = self._first_string(user.get("avatar"))
 
         online_document_info = OnlineDocumentInfo(

@@ -28,6 +28,17 @@
 
 私有仓库需要额外选择对应资源范围和仓库权限。
 
+如果使用仓库级 Token，可在数据源凭证中填写 `仓库路径`。填写后校验会跳过
+`/user` 和 `/user/repos`，只检查：
+
+```text
+GET /organization/group/repository
+GET /organization/group/repository/-/git/contents
+```
+
+这种模式需要 `repo-basic-info:r` 和 `repo-code:r`，不再要求
+`account-profile:r` 和 `account-engage:r`。
+
 ### 2. 在 Dify 中连接
 
 - `CNB Access Token`：上一步创建的访问令牌
@@ -81,6 +92,9 @@ organization/other/repository
 
 不要只填 `repository`，必须包含完整的组织、子组织和仓库路径。留空时会
 扫描当前令牌有权限访问的所有仓库。
+
+`最多导入仓库数` 只限制自动发现仓库的数量。手动填写仓库路径时，会处理全部
+路径，不会被这个数值截断。
 
 如果仓库路径留空但填写了分支，插件会把这个分支应用到所有有权限的仓库。
 某些仓库没有该分支或不能读取代码时，会显示为 `(ref unavailable)`，并跳过
