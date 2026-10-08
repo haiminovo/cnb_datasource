@@ -233,6 +233,8 @@ class CNBDataSourceTest(unittest.TestCase):
             calls.append((path, params))
             if path == "/user":
                 return {"id": "u1", "username": "alice"}
+            if path == "/team/demo/-/git/branches/develop":
+                return {"commit": {"sha": "resolved-develop"}}
             if path == "/team/demo/-/git/contents":
                 return {
                     "entries": [
@@ -246,6 +248,7 @@ class CNBDataSourceTest(unittest.TestCase):
             {
                 "repository_paths": "team/demo",
                 "ref": "develop",
+                "ref_type": "branch",
                 "max_files_per_repo": 0,
                 "issues_per_repo": 0,
                 "pulls_per_repo": 0,
@@ -253,14 +256,20 @@ class CNBDataSourceTest(unittest.TestCase):
         )
 
         pages = response.result[0].pages
+        encoded_ref = (
+            base64.urlsafe_b64encode(b"resolved-develop").decode("ascii").rstrip("=")
+        )
         self.assertEqual(
             [page.page_id for page in pages],
             [
-                "project:team/demo|ZGV2ZWxvcA",
-                "file:team/demo|ZGV2ZWxvcA:README.md",
+                f"project:team/demo|{encoded_ref}",
+                f"file:team/demo|{encoded_ref}:README.md",
             ],
         )
-        self.assertIn(("/team/demo/-/git/contents", {"ref": "develop"}), calls)
+        self.assertIn(
+            ("/team/demo/-/git/contents", {"ref": "resolved-develop"}),
+            calls,
+        )
 
     def test_ref_permission_error_skips_repo_content(self):
         datasource = build_datasource()
@@ -268,6 +277,8 @@ class CNBDataSourceTest(unittest.TestCase):
         def fake_request(method, path, params=None):
             if path == "/user":
                 return {"id": "u1", "username": "alice"}
+            if path == "/team/demo/-/git/branches/develop":
+                return {"commit": {"sha": "resolved-develop"}}
             if path == "/team/demo/-/git/contents":
                 raise CNBAPIError(403, "you do not have permission")
             raise AssertionError(f"unexpected path: {path}")
@@ -277,6 +288,7 @@ class CNBDataSourceTest(unittest.TestCase):
             {
                 "repository_paths": "team/demo",
                 "ref": "develop",
+                "ref_type": "branch",
                 "max_files_per_repo": 100,
                 "issues_per_repo": 0,
                 "pulls_per_repo": 0,

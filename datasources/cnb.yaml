@@ -39,15 +39,8 @@ parameters:
   - name: ref_type
     type: select
     required: false
-    default: auto
+    default: branch
     options:
-      - value: auto
-        label:
-          en_US: Auto
-          zh_Hans: 自动
-          ja_JP: 自動
-          pt_BR: Automatico
-          zh_Hant: 自動
       - value: branch
         label:
           en_US: Branch
@@ -76,11 +69,11 @@ parameters:
       pt_BR: Tipo de ref
       zh_Hant: 引用類型
     description:
-      en_US: Choose branch, tag, or commit to resolve the selected ref explicitly and avoid ambiguous names. Auto preserves raw ref behavior
-      zh_Hans: 选择分支、标签或 Commit 会显式解析目标；同名分支和 Tag 也能区分。自动模式保留原始 ref 行为
-      ja_JP: Branch、Tag、Commit を選ぶと参照を明示的に解決し、同名の ref も区別できます。Auto は従来の raw ref 動作です
-      pt_BR: Escolha branch, tag ou commit para resolver o ref explicitamente. Auto mantem o comportamento de ref bruto
-      zh_Hant: 選擇分支、標籤或 Commit 會明確解析目標；同名分支和 Tag 也能區分。自動模式保留原始 ref 行為
+      en_US: Select the exact type of the value below. Branch and tag names are resolved to a commit SHA before reading files
+      zh_Hans: 选择下方引用值的准确类型。分支和标签会先解析为 Commit SHA，再读取文件
+      ja_JP: 下の値の正確な種別を選択します。Branch と Tag は Commit SHA に解決してからファイルを読み込みます
+      pt_BR: Selecione o tipo exato do valor abaixo. Branch e tag sao resolvidos para commit SHA antes da leitura
+      zh_Hant: 選擇下方引用值的準確類型。分支和標籤會先解析為 Commit SHA，再讀取檔案
   - name: ref
     type: string
     required: false

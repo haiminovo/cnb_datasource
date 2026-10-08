@@ -307,12 +307,12 @@ class CNBDataSource(OnlineDocumentDatasource):
 
     def _normalize_ref_type(self, value: Any) -> str:
         if value is None or value == "":
-            return "auto"
+            return "branch"
         if not isinstance(value, str):
             raise TypeError("CNB ref type must be a string")
         ref_type = value.strip().casefold()
-        if ref_type not in {"auto", "branch", "tag", "commit"}:
-            raise ValueError("CNB ref type must be one of auto, branch, tag, or commit")
+        if ref_type not in {"branch", "tag", "commit"}:
+            raise ValueError("CNB ref type must be branch, tag, or commit")
         return ref_type
 
     def _extract_commit_sha(self, payload: Any) -> str | None:
@@ -330,7 +330,7 @@ class CNBDataSource(OnlineDocumentDatasource):
         return None
 
     def _resolve_ref(self, repo_path: str, ref: str, ref_type: str) -> str:
-        if not ref or ref_type == "auto":
+        if not ref:
             return ref
 
         encoded_repo = self._encode_repo_path(repo_path)

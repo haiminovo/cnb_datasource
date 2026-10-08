@@ -127,15 +127,13 @@ Use `Ref type` together with `Branch, tag, or commit`:
 
 | Ref type | Value example | Resolution |
 | :- | :- | :- |
-| Default | leave empty | Repository default branch |
 | Branch | `develop` | Resolves the branch through the CNB branches API |
 | Tag | `v1.0.0` | Resolves the tag through the CNB tags API |
 | Commit | `a1b2c3d4...` | Uses the commit SHA directly |
-| Auto | `develop` | Passes the raw ref and lets CNB resolve it |
 
 The plugin resolves Branch and Tag values to a commit SHA before reading files.
-This keeps branch and tag names distinct when both use the same name. Use `Auto`
-only for compatibility with previous versions.
+This keeps branch and tag names distinct when both use the same name. Leave the
+ref value empty to use the repository default branch.
 
 For branch names containing slashes, enter the complete name directly, such as
 `feature/login`.
