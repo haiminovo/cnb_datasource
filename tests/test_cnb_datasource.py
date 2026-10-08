@@ -177,15 +177,15 @@ class CNBDataSourceTest(unittest.TestCase):
         datasource = build_datasource()
         self.assertEqual(
             datasource._parse_repository_paths(
-                "jcsk100/cube/cube-account-ui\n"
-                "https://cnb.cool/jcsk100/roc/roc.git, "
-                "https://cnb.cool/jcsk100/bfl/customer-resource/-/blob/main/README.md, "
-                "jcsk100/roc/roc"
+                "organization/group/repository-a\n"
+                "https://cnb.cool/organization/group/repository-b.git, "
+                "https://cnb.cool/organization/group/repository-c/-/blob/main/README.md, "
+                "organization/group/repository-b"
             ),
             [
-                "jcsk100/cube/cube-account-ui",
-                "jcsk100/roc/roc",
-                "jcsk100/bfl/customer-resource",
+                "organization/group/repository-a",
+                "organization/group/repository-b",
+                "organization/group/repository-c",
             ],
         )
 
@@ -194,7 +194,7 @@ class CNBDataSourceTest(unittest.TestCase):
         self.assertEqual(datasource._normalize_ref("refs/heads/develop"), "develop")
         self.assertEqual(
             datasource._normalize_ref(
-                "https://cnb.cool/jcsk100/cube/cube-account-ui/-/tree/release"
+                "https://cnb.cool/organization/group/repository/-/tree/release"
             ),
             "release",
         )

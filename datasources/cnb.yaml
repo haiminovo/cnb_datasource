@@ -25,17 +25,17 @@ parameters:
       pt_BR: Caminhos dos repositorios (opcional)
       zh_Hant: 指定倉庫路徑（選填）
     placeholder:
-      en_US: jcsk100/cube/cube-account-ui
-      zh_Hans: jcsk100/cube/cube-account-ui
-      ja_JP: jcsk100/cube/cube-account-ui
-      pt_BR: jcsk100/cube/cube-account-ui
-      zh_Hant: jcsk100/cube/cube-account-ui
+      en_US: organization/group/repository
+      zh_Hans: organization/group/repository
+      ja_JP: organization/group/repository
+      pt_BR: organization/group/repository
+      zh_Hant: organization/group/repository
     description:
-      en_US: "Optional. Example: jcsk100/cube/cube-account-ui. Use a full cnb.cool URL or group/repository path; separate multiple paths with commas or new lines. Leave empty to list all accessible repositories"
-      zh_Hans: 选填。示例：jcsk100/cube/cube-account-ui；可填完整 cnb.cool 地址或 group/repository，多个路径用逗号或换行分隔；留空时列出所有有权限的仓库
-      ja_JP: 任意。例：jcsk100/cube/cube-account-ui。完全な cnb.cool URL または group/repository を指定し、複数はカンマまたは改行で区切ります。空欄の場合はアクセス可能な全リポジトリを一覧表示します
-      pt_BR: "Opcional. Exemplo: jcsk100/cube/cube-account-ui. Use uma URL cnb.cool ou caminho grupo/repositorio; separe varios por virgula ou linha. Deixe vazio para listar todos os repositorios acessiveis"
-      zh_Hant: 選填。範例：jcsk100/cube/cube-account-ui；可填完整 cnb.cool 網址或 group/repository，多個路徑用逗號或換行分隔；留空時列出所有有權限的倉庫
+      en_US: "Optional. Example: organization/group/repository. Use a full cnb.cool URL or organization/group/repository path; separate multiple paths with commas or new lines. Leave empty to list all accessible repositories"
+      zh_Hans: 选填。示例：organization/group/repository；可填完整 cnb.cool 地址或 organization/group/repository，多个路径用逗号或换行分隔；留空时列出所有有权限的仓库
+      ja_JP: 任意。例：organization/group/repository。完全な cnb.cool URL または organization/group/repository を指定し、複数はカンマまたは改行で区切ります。空欄の場合はアクセス可能な全リポジトリを一覧表示します
+      pt_BR: "Opcional. Exemplo: organization/group/repository. Use uma URL cnb.cool ou caminho organizacao/grupo/repositorio; separe varios por virgula ou linha. Deixe vazio para listar todos os repositorios acessiveis"
+      zh_Hant: 選填。範例：organization/group/repository；可填完整 cnb.cool 網址或 organization/group/repository，多個路徑用逗號或換行分隔；留空時列出所有有權限的倉庫
   - name: ref
     type: string
     required: false

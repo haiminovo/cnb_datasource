@@ -53,33 +53,33 @@
 从浏览器中的 CNB 仓库地址复制路径，例如：
 
 ```text
-https://cnb.cool/jcsk100/cube/cube-account-ui
+https://cnb.cool/organization/group/repository
 ```
 
 仓库路径填写：
 
 ```text
-jcsk100/cube/cube-account-ui
+organization/group/repository
 ```
 
 以下格式都支持：
 
 ```text
-jcsk100/cube/cube-account-ui
-https://cnb.cool/jcsk100/cube/cube-account-ui
-https://cnb.cool/jcsk100/cube/cube-account-ui.git
-https://cnb.cool/jcsk100/cube/cube-account-ui/-/blob/main/README.md
+organization/group/repository
+https://cnb.cool/organization/group/repository
+https://cnb.cool/organization/group/repository.git
+https://cnb.cool/organization/group/repository/-/blob/main/README.md
 ```
 
 多个仓库可以使用逗号或换行分隔：
 
 ```text
-jcsk100/cube/cube-account-ui
-jcsk100/bfl/customer-resource
-jcsk100/roc/roc
+organization/group/repository-a
+organization/group/repository-b
+organization/other/repository
 ```
 
-不要只填 `cube-account-ui`，必须包含完整的组织、子组织和仓库路径。留空时会
+不要只填 `repository`，必须包含完整的组织、子组织和仓库路径。留空时会
 扫描当前令牌有权限访问的所有仓库。
 
 如果仓库路径留空但填写了分支，插件会把这个分支应用到所有有权限的仓库。
@@ -95,7 +95,7 @@ develop
 v1.0.0
 a1b2c3d4
 refs/heads/develop
-https://cnb.cool/jcsk100/cube/cube-account-ui/-/tree/develop
+https://cnb.cool/organization/group/repository/-/tree/develop
 ```
 
 如果分支名本身包含斜杠，例如 `feature/login`，直接填写完整分支名。

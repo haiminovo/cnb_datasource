@@ -71,33 +71,33 @@ issue, and pull request documents that should be imported.
 Copy the repository path from the CNB browser URL. For example:
 
 ```text
-https://cnb.cool/jcsk100/cube/cube-account-ui
+https://cnb.cool/organization/group/repository
 ```
 
 The corresponding repository path is:
 
 ```text
-jcsk100/cube/cube-account-ui
+organization/group/repository
 ```
 
 Accepted formats:
 
 ```text
-jcsk100/cube/cube-account-ui
-https://cnb.cool/jcsk100/cube/cube-account-ui
-https://cnb.cool/jcsk100/cube/cube-account-ui.git
-https://cnb.cool/jcsk100/cube/cube-account-ui/-/blob/main/README.md
+organization/group/repository
+https://cnb.cool/organization/group/repository
+https://cnb.cool/organization/group/repository.git
+https://cnb.cool/organization/group/repository/-/blob/main/README.md
 ```
 
 Multiple repositories can be separated by commas or new lines:
 
 ```text
-jcsk100/cube/cube-account-ui
-jcsk100/bfl/customer-resource
-jcsk100/roc/roc
+organization/group/repository-a
+organization/group/repository-b
+organization/other/repository
 ```
 
-Do not enter only the repository name, such as `cube-account-ui`. The full
+Do not enter only the repository name, such as `repository`. The full
 namespace path is required. Leave this field empty to scan all repositories
 accessible to the configured CNB token.
 
@@ -117,7 +117,7 @@ develop
 v1.0.0
 a1b2c3d4
 refs/heads/develop
-https://cnb.cool/jcsk100/cube/cube-account-ui/-/tree/develop
+https://cnb.cool/organization/group/repository/-/tree/develop
 ```
 
 Use the branch name directly when the branch contains slashes, for example
