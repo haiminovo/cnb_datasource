@@ -305,6 +305,60 @@ class CNBDataSource(OnlineDocumentDatasource):
                 raise ValueError("CNB ref URL must point to a tree, blob, or commit")
         return ref.removeprefix("refs/heads/").removeprefix("refs/tags/").strip()
 
+    def _normalize_ref_type(self, value: Any) -> str:
+        if value is None or value == "":
+            return "auto"
+        if not isinstance(value, str):
+            raise TypeError("CNB ref type must be a string")
+        ref_type = value.strip().casefold()
+        if ref_type not in {"auto", "branch", "tag", "commit"}:
+            raise ValueError("CNB ref type must be one of auto, branch, tag, or commit")
+        return ref_type
+
+    def _extract_commit_sha(self, payload: Any) -> str | None:
+        if not isinstance(payload, dict):
+            return None
+        commit = payload.get("commit")
+        if isinstance(commit, dict) and isinstance(commit.get("sha"), str):
+            return commit["sha"]
+        if isinstance(payload.get("sha"), str):
+            return payload["sha"]
+        if payload.get("target_type") == "commit" and isinstance(
+            payload.get("target"), str
+        ):
+            return payload["target"]
+        return None
+
+    def _resolve_ref(self, repo_path: str, ref: str, ref_type: str) -> str:
+        if not ref or ref_type == "auto":
+            return ref
+
+        encoded_repo = self._encode_repo_path(repo_path)
+        encoded_ref = quote(ref, safe="")
+        if ref_type == "branch":
+            payload = self._request(
+                "GET",
+                f"/{encoded_repo}/-/git/branches/{encoded_ref}",
+            )
+        elif ref_type == "tag":
+            payload = self._request(
+                "GET",
+                f"/{encoded_repo}/-/git/tags/{encoded_ref}",
+            )
+        else:
+            payload = self._request(
+                "GET",
+                f"/{encoded_repo}/-/git/commits/{encoded_ref}",
+            )
+
+        commit_sha = self._extract_commit_sha(payload)
+        if not commit_sha:
+            raise CNBAPIError(
+                404,
+                f"Unable to resolve {ref_type} '{ref}' in {repo_path}",
+            )
+        return commit_sha
+
     def _encode_ref(self, ref: str) -> str:
         if not ref:
             return ""
@@ -559,6 +613,7 @@ class CNBDataSource(OnlineDocumentDatasource):
             datasource_parameters.get("repository_paths")
         )
         ref = self._normalize_ref(datasource_parameters.get("ref"))
+        ref_type = self._normalize_ref_type(datasource_parameters.get("ref_type"))
 
         user = self._get_user()
         repositories = self._get_repositories(max_repos, repository_paths)
@@ -576,17 +631,19 @@ class CNBDataSource(OnlineDocumentDatasource):
                 repo.get("created_at"),
             )
             ref_label = ref or "default branch"
-            project_page_id = self._make_project_page_id(repo_path, ref)
+            actual_ref = ref
             ref_available = True
             try:
+                actual_ref = self._resolve_ref(repo_path, ref, ref_type)
                 readme_path = self._find_readme_path(
                     repo_path,
-                    ref,
-                    raise_on_error=bool(ref),
+                    actual_ref,
+                    raise_on_error=bool(actual_ref),
                 )
             except CNBAPIError:
                 readme_path = None
                 ref_available = False
+            project_page_id = self._make_project_page_id(repo_path, actual_ref)
             project_page_name = (
                 f"{repo_name} ({ref})"
                 if ref_available and ref
@@ -606,7 +663,11 @@ class CNBDataSource(OnlineDocumentDatasource):
             if ref_available and readme_path:
                 pages.append(
                     {
-                        "page_id": self._make_file_page_id(repo_path, readme_path, ref),
+                        "page_id": self._make_file_page_id(
+                            repo_path,
+                            readme_path,
+                            actual_ref,
+                        ),
                         "page_name": f"{repo_name} ({ref_label}) - {readme_path}",
                         "last_edited_time": last_updated,
                         "type": "file",
@@ -618,7 +679,7 @@ class CNBDataSource(OnlineDocumentDatasource):
                 for code_path in self._list_code_files(
                     repo_path,
                     max_files_per_repo,
-                    ref,
+                    actual_ref,
                 ):
                     if code_path == readme_path:
                         continue
@@ -627,7 +688,7 @@ class CNBDataSource(OnlineDocumentDatasource):
                             "page_id": self._make_file_page_id(
                                 repo_path,
                                 code_path,
-                                ref,
+                                actual_ref,
                             ),
                             "page_name": f"{repo_name} ({ref_label}) - {code_path}",
                             "last_edited_time": last_updated,

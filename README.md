@@ -107,20 +107,23 @@ cannot be read are shown with `(ref unavailable)` and their README/code files
 are skipped. This prevents one inaccessible repository from failing the whole
 datasource.
 
-### Branch, tag, or commit
+### Ref type and value
 
-Leave `Branch, tag, or commit` empty to use the repository default branch.
-Accepted values include:
+Use `Ref type` together with `Branch, tag, or commit`:
 
-```text
-develop
-v1.0.0
-a1b2c3d4
-refs/heads/develop
-https://cnb.cool/organization/group/repository/-/tree/develop
-```
+| Ref type | Value example | Resolution |
+| :- | :- | :- |
+| Default | leave empty | Repository default branch |
+| Branch | `develop` | Resolves the branch through the CNB branches API |
+| Tag | `v1.0.0` | Resolves the tag through the CNB tags API |
+| Commit | `a1b2c3d4...` | Uses the commit SHA directly |
+| Auto | `develop` | Passes the raw ref and lets CNB resolve it |
 
-Use the branch name directly when the branch contains slashes, for example
+The plugin resolves Branch and Tag values to a commit SHA before reading files.
+This keeps branch and tag names distinct when both use the same name. Use `Auto`
+only for compatibility with previous versions.
+
+For branch names containing slashes, enter the complete name directly, such as
 `feature/login`.
 
 ## Import Behavior

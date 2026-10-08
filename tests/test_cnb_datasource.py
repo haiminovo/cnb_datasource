@@ -199,6 +199,32 @@ class CNBDataSourceTest(unittest.TestCase):
             "release",
         )
 
+    def test_resolve_ref_type_explicitly(self):
+        datasource = build_datasource()
+
+        def fake_request(method, path, params=None):
+            if path == "/team/demo/-/git/branches/release":
+                return {"commit": {"sha": "branch-sha"}}
+            if path == "/team/demo/-/git/tags/release":
+                return {"commit": {"sha": "tag-sha"}}
+            if path == "/team/demo/-/git/commits/abc123":
+                return {"sha": "commit-sha"}
+            raise AssertionError(f"unexpected path: {path}")
+
+        datasource._request = fake_request
+        self.assertEqual(
+            datasource._resolve_ref("team/demo", "release", "branch"),
+            "branch-sha",
+        )
+        self.assertEqual(
+            datasource._resolve_ref("team/demo", "release", "tag"),
+            "tag-sha",
+        )
+        self.assertEqual(
+            datasource._resolve_ref("team/demo", "abc123", "commit"),
+            "commit-sha",
+        )
+
     def test_get_pages_with_ref(self):
         datasource = build_datasource()
         calls = []

@@ -86,19 +86,22 @@ organization/other/repository
 某些仓库没有该分支或不能读取代码时，会显示为 `(ref unavailable)`，并跳过
 该仓库的 README 和代码，不会导致整个数据源失败。
 
-### 分支、标签或 Commit 怎么填
+### 引用类型和引用值怎么填
 
-`分支、标签或 Commit` 留空时使用仓库默认分支。支持：
+`引用类型` 和 `分支、标签或 Commit` 要配合使用：
 
-```text
-develop
-v1.0.0
-a1b2c3d4
-refs/heads/develop
-https://cnb.cool/organization/group/repository/-/tree/develop
-```
+| 引用类型 | 引用值示例 | 解析方式 |
+| :- | :- | :- |
+| 自动 | `develop` | 直接传给 CNB，由 CNB 自行解析 |
+| 分支 | `develop` | 调用 CNB 分支接口并解析为 Commit SHA |
+| 标签 | `v1.0.0` | 调用 CNB 标签接口并解析为 Commit SHA |
+| Commit | `a1b2c3d4...` | 直接使用指定 Commit SHA |
 
-如果分支名本身包含斜杠，例如 `feature/login`，直接填写完整分支名。
+插件会在读取文件前把分支和标签解析成 Commit SHA。因此即使分支和标签同名，
+只要选择正确的“引用类型”，就不会产生歧义。
+
+“自动”模式只用于兼容旧版本。如果分支名包含斜杠，例如 `feature/login`，
+请选择“分支”并直接填写完整分支名。
 
 ## OAuth
 

@@ -36,6 +36,51 @@ parameters:
       ja_JP: 任意。例：organization/group/repository。完全な cnb.cool URL または organization/group/repository を指定し、複数はカンマまたは改行で区切ります。空欄の場合はアクセス可能な全リポジトリを一覧表示します
       pt_BR: "Opcional. Exemplo: organization/group/repository. Use uma URL cnb.cool ou caminho organizacao/grupo/repositorio; separe varios por virgula ou linha. Deixe vazio para listar todos os repositorios acessiveis"
       zh_Hant: 選填。範例：organization/group/repository；可填完整 cnb.cool 網址或 organization/group/repository，多個路徑用逗號或換行分隔；留空時列出所有有權限的倉庫
+  - name: ref_type
+    type: select
+    required: false
+    default: auto
+    options:
+      - value: auto
+        label:
+          en_US: Auto
+          zh_Hans: 自动
+          ja_JP: 自動
+          pt_BR: Automatico
+          zh_Hant: 自動
+      - value: branch
+        label:
+          en_US: Branch
+          zh_Hans: 分支
+          ja_JP: ブランチ
+          pt_BR: Branch
+          zh_Hant: 分支
+      - value: tag
+        label:
+          en_US: Tag
+          zh_Hans: 标签
+          ja_JP: タグ
+          pt_BR: Tag
+          zh_Hant: 標籤
+      - value: commit
+        label:
+          en_US: Commit
+          zh_Hans: Commit
+          ja_JP: コミット
+          pt_BR: Commit
+          zh_Hant: Commit
+    label:
+      en_US: Ref type
+      zh_Hans: 引用类型
+      ja_JP: Ref 種別
+      pt_BR: Tipo de ref
+      zh_Hant: 引用類型
+    description:
+      en_US: Choose branch, tag, or commit to resolve the selected ref explicitly and avoid ambiguous names. Auto preserves raw ref behavior
+      zh_Hans: 选择分支、标签或 Commit 会显式解析目标；同名分支和 Tag 也能区分。自动模式保留原始 ref 行为
+      ja_JP: Branch、Tag、Commit を選ぶと参照を明示的に解決し、同名の ref も区別できます。Auto は従来の raw ref 動作です
+      pt_BR: Escolha branch, tag ou commit para resolver o ref explicitamente. Auto mantem o comportamento de ref bruto
+      zh_Hant: 選擇分支、標籤或 Commit 會明確解析目標；同名分支和 Tag 也能區分。自動模式保留原始 ref 行為
   - name: ref
     type: string
     required: false
@@ -52,11 +97,11 @@ parameters:
       pt_BR: develop
       zh_Hant: develop
     description:
-      en_US: A branch name, tag, commit SHA, or cnb.cool tree/blob URL. Leave empty for the default branch
-      zh_Hans: 可填分支名、Tag、Commit SHA 或 cnb.cool 文件地址；留空使用默认分支
-      ja_JP: ブランチ名、タグ、コミット SHA、または cnb.cool の tree/blob URL。空欄は既定ブランチ
-      pt_BR: Nome da branch, tag, commit SHA ou URL cnb.cool tree/blob. Deixe vazio para a branch padrao
-      zh_Hant: 可填分支名、Tag、Commit SHA 或 cnb.cool 檔案網址；留空使用預設分支
+      en_US: The branch name, tag name, or commit SHA selected by Ref type. Leave empty for the default branch
+      zh_Hans: 根据“引用类型”填写分支名、标签名或 Commit SHA；留空使用默认分支
+      ja_JP: Ref 種別に合わせてブランチ名、タグ名、コミット SHA を入力します。空欄は既定ブランチ
+      pt_BR: Informe o branch, tag ou commit SHA conforme o tipo selecionado. Deixe vazio para a branch padrao
+      zh_Hant: 根據「引用類型」填寫分支名、標籤名或 Commit SHA；留空使用預設分支
   - name: max_repos
     type: number
     required: false
