@@ -2,7 +2,7 @@ import base64
 import binascii
 from collections.abc import Generator, Mapping
 from typing import Any, ClassVar
-from urllib.parse import quote
+from urllib.parse import quote, unquote, urlparse
 
 import certifi
 import requests
@@ -363,13 +363,35 @@ class CNBDataSource(OnlineDocumentDatasource):
             return []
         paths: list[str] = []
         for item in value.replace("\r", "\n").replace(",", "\n").split("\n"):
-            normalized = item.strip().strip("/")
+            raw = item.strip()
+            if not raw:
+                continue
+            if "://" in raw:
+                parsed = urlparse(raw)
+                host = (parsed.hostname or "").casefold()
+                if host not in {"cnb.cool", "www.cnb.cool", "api.cnb.cool"}:
+                    raise ValueError(
+                        "CNB repository URL must use cnb.cool, for example "
+                        "https://cnb.cool/group/repository"
+                    )
+                normalized = unquote(parsed.path)
+            else:
+                normalized = unquote(raw)
+                if normalized.casefold().startswith("cnb.cool/"):
+                    normalized = normalized[len("cnb.cool/") :]
+
+            normalized = normalized.split("?", 1)[0].split("#", 1)[0].strip("/")
+            if "/-/" in normalized:
+                normalized = normalized.split("/-/", 1)[0]
+            if normalized.casefold().endswith(".git"):
+                normalized = normalized[:-4].strip("/")
             if not normalized or normalized in paths:
                 continue
             parts = [part for part in normalized.split("/") if part]
             if len(parts) < 2 or any(part in {".", ".."} for part in parts):
                 raise ValueError(
-                    "CNB repository paths must use the format namespace/repository"
+                    "CNB repository paths must use a full path such as "
+                    "group/repository or https://cnb.cool/group/repository"
                 )
             paths.append("/".join(parts))
         return paths

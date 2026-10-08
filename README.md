@@ -66,6 +66,41 @@ endpoints.
 After the page list is generated, select the repository metadata, README, code,
 issue, and pull request documents that should be imported.
 
+### Repository paths
+
+Copy the repository path from the CNB browser URL. For example:
+
+```text
+https://cnb.cool/jcsk100/cube/cube-account-ui
+```
+
+The corresponding repository path is:
+
+```text
+jcsk100/cube/cube-account-ui
+```
+
+Accepted formats:
+
+```text
+jcsk100/cube/cube-account-ui
+https://cnb.cool/jcsk100/cube/cube-account-ui
+https://cnb.cool/jcsk100/cube/cube-account-ui.git
+https://cnb.cool/jcsk100/cube/cube-account-ui/-/blob/main/README.md
+```
+
+Multiple repositories can be separated by commas or new lines:
+
+```text
+jcsk100/cube/cube-account-ui
+jcsk100/bfl/customer-resource
+jcsk100/roc/roc
+```
+
+Do not enter only the repository name, such as `cube-account-ui`. The full
+namespace path is required. Leave this field empty to scan all repositories
+accessible to the configured CNB token.
+
 ## Import Behavior
 
 - Access is read-only.

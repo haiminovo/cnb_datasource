@@ -48,6 +48,40 @@
 
 代码文件会作为独立文档出现在仓库项目下面，需要在 Dify 中勾选后才会导入。
 
+### 仓库路径怎么填
+
+从浏览器中的 CNB 仓库地址复制路径，例如：
+
+```text
+https://cnb.cool/jcsk100/cube/cube-account-ui
+```
+
+仓库路径填写：
+
+```text
+jcsk100/cube/cube-account-ui
+```
+
+以下格式都支持：
+
+```text
+jcsk100/cube/cube-account-ui
+https://cnb.cool/jcsk100/cube/cube-account-ui
+https://cnb.cool/jcsk100/cube/cube-account-ui.git
+https://cnb.cool/jcsk100/cube/cube-account-ui/-/blob/main/README.md
+```
+
+多个仓库可以使用逗号或换行分隔：
+
+```text
+jcsk100/cube/cube-account-ui
+jcsk100/bfl/customer-resource
+jcsk100/roc/roc
+```
+
+不要只填 `cube-account-ui`，必须包含完整的组织、子组织和仓库路径。留空时会
+扫描当前令牌有权限访问的所有仓库。
+
 ## OAuth
 
 插件支持 CNB OAuth 2.0。CNB OAuth 应用需要运营管理员审核，普通使用场景

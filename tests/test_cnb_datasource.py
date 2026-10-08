@@ -177,9 +177,16 @@ class CNBDataSourceTest(unittest.TestCase):
         datasource = build_datasource()
         self.assertEqual(
             datasource._parse_repository_paths(
-                "jcsk100/cube/cube-account-ui\njcsk100/roc/roc, jcsk100/roc/roc"
+                "jcsk100/cube/cube-account-ui\n"
+                "https://cnb.cool/jcsk100/roc/roc.git, "
+                "https://cnb.cool/jcsk100/bfl/customer-resource/-/blob/main/README.md, "
+                "jcsk100/roc/roc"
             ),
-            ["jcsk100/cube/cube-account-ui", "jcsk100/roc/roc"],
+            [
+                "jcsk100/cube/cube-account-ui",
+                "jcsk100/roc/roc",
+                "jcsk100/bfl/customer-resource",
+            ],
         )
 
     def test_get_pages_with_ref(self):

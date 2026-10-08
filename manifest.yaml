@@ -1,4 +1,4 @@
-version: 0.0.4
+version: 0.0.5
 type: plugin
 author: haiminovo
 name: cnb_datasource
@@ -25,7 +25,7 @@ plugins:
   datasources:
     - provider/cnb.yaml
 meta:
-  version: 0.0.4
+  version: 0.0.5
   arch:
     - amd64
     - arm64
